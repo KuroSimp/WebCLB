@@ -1,5 +1,3 @@
-// Đã loại bỏ toàn bộ code liên quan đến mobile menu, lồng đèn, hoặc các thành phần header cũ không còn dùng để tránh lỗi hiển thị header.
-
 (() => {
     'use strict';
 
@@ -353,6 +351,52 @@
     window.addEventListener('scroll', animateCounters);
     window.addEventListener('DOMContentLoaded', animateCounters);
 
+    // --- Handle Member Registration Form Submission ---
+    const setupRegisterForm = () => {
+        const form = document.getElementById('contactForm');
+        if (!form) return;
+        // Tạo vùng hiển thị thông báo nếu chưa có
+        let msgBox = form.querySelector('.form-message-box');
+        if (!msgBox) {
+            msgBox = document.createElement('div');
+            msgBox.className = 'form-message-box text-center my-2';
+            form.insertBefore(msgBox, form.firstChild);
+        }
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            msgBox.textContent = '';
+            msgBox.classList.remove('text-green-600', 'text-red-600');
+            const name = form.name.value.trim();
+            const email = form.email.value.trim();
+            const phone = form.phone.value.trim();
+            const reason = form.reason.value.trim();
+            if (!name || !email || !phone || !reason) {
+                msgBox.textContent = 'Vui lòng nhập đầy đủ thông tin.';
+                msgBox.classList.add('text-red-600');
+                return;
+            }
+            try {
+                const res = await fetch('https://backendwebclb.onrender.com/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, reason })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    msgBox.textContent = 'Đăng ký thành công! Cảm ơn bạn đã tham gia BIT.';
+                    msgBox.classList.add('text-green-600');
+                    form.reset();
+                } else {
+                    msgBox.textContent = data.error || 'Đăng ký thất bại. Vui lòng thử lại.';
+                    msgBox.classList.add('text-red-600');
+                }
+            } catch (err) {
+                msgBox.textContent = 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.';
+                msgBox.classList.add('text-red-600');
+            }
+        });
+    };
+
     // Initialize all scripts
     const init = () => {
         setupMobileMenu();
@@ -363,6 +407,7 @@
         animateStats();
         setupJoinFormAnimation();
         setupEventPageToggle();
+        setupRegisterForm();
     };
 
     // Run scripts when the DOM is fully loaded
