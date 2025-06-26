@@ -376,7 +376,7 @@
                 return;
             }
             try {
-                const res = await fetch('https://backendwebclb.onrender.com/api/register', {
+                const res = await fetch(`${API_BASE}/api/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, email, phone, reason })
