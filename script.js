@@ -1,6 +1,8 @@
 (() => {
     'use strict';
 
+    const API_BASE = 'https://backendwebclb.onrender.com'; // Đổi thành http://localhost:3000 khi chạy local nếu cần
+
     // Function to set up mobile menu interactions
     const setupMobileMenu = () => {
         const mobileMenuButton = document.getElementById('mobile-menu-button');
